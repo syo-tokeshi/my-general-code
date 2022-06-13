@@ -1,5 +1,3 @@
-# こちらのシートに書き込む
-# https://docs.google.com/spreadsheets/d/xxx/edit#gid=0
 require 'google_drive'
 require 'active_support/time' # active_supportのtimeクラスを使用 https://qiita.com/shu_0115/items/b490bd3de6bc4d5e43a5
 
