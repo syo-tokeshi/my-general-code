@@ -1,0 +1,91 @@
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="px-5">
+        <h1 class="my-4">タスク管理</h1>
+        <div class="row">
+            <!-- グループ化したデータをループ -->
+            <div class="col-md-4" v-for="(statusItems,statusId) in items">
+
+                <!-- ステータス名を取得 -->
+                <h4 v-text="getStatusName(statusId)"></h4>
+
+                <!-- Vue.Draggableのコンポーネント -->
+                <draggable class="list-group"
+                           v-model="items[statusId]"
+                           group="items-todo-list"
+                           @change="onChange($event, statusId)">
+                    <div class="list-group-item bg-light"
+                         :key="i.id"
+                         v-for="i in statusItems"
+                         v-text="i.name"></div>
+                </draggable>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.1/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.23.2/vuedraggable.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script>
+
+        new Vue({
+            el: '#app',
+            data: {
+                items: {},
+                statuses: [
+                    { id: 1, name: '入荷' },
+                    { id: 2, name: '検品' },
+                    { id: 3, name: '出荷' },
+                ]
+            },
+            methods: {
+                getStatusName(statusId) {
+
+                    // statuses から該当する名前を取得する
+                    const status = _.find(this.statuses, {
+                        id: parseInt(statusId)
+                    });
+                    return status.name;
+
+                },
+                onChange(e, statusId) { // アイテムが移動されたとき
+
+                    if(e.added) {
+
+                        console.log('追加情報:', statusId, e.added);
+
+                    } else if(e.removed) {
+
+                        console.log('削除情報:', statusId, e.removed);
+
+                    }
+
+                }
+            },
+            mounted() {
+
+                // テストデータの作成
+                let allItems = [];
+                const statusIds = _.map(this.statuses, 'id');
+
+                for(let i = 0 ; i < 25 ; i++) {
+
+                    allItems.push({
+                        id: i,
+                        name: '商品名 - '+ i,
+                        statusId: _.sample(statusIds) // ランダムに取得
+                    });
+
+                }
+
+                this.items = _.groupBy(allItems, 'statusId');
+
+            }
+        });
+
+    </script>
+</body>
+</html>
